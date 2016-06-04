@@ -49,9 +49,8 @@ var connectCallback = function (err) {
         });
         // Create a message and send it to the IoT Hub every second
         setInterval(function () {
-
-            var windSpeed = 10 + (Math.random() * 4);
-            var data = JSON.stringify({ deviceId: 'mydevice', windSpeed: windSpeed });
+            //heartbeat
+            var data = JSON.stringify({ deviceId: 'mydevice'});
             var message = new Message(data);
             console.log("Sending message: " + message.getData());
             client.sendEvent(message, printResultFor('send'));
