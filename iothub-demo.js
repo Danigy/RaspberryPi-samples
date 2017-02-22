@@ -34,7 +34,7 @@ var connectCallback = function (err) {
             client.complete(msg, printResultFor('completed'));
             console.log('Id: ' + msg.messageId + ' Body: ' + msg.data);
             var cmd = JSON.parse(msg.data);
-            console.log('cmd = ' + cmd.name);
+            console.log('### cmd = ' + cmd.name);
             switch (cmd.name) {
                 case 'cmd_takepic':
                     child_process = spawn('raspistill',['-o','test.jpg']);
@@ -47,15 +47,28 @@ var connectCallback = function (err) {
                     break;
             }
         });
+        function random (low, high) {
+            return Math.random() * (high - low) + low;
+        }
+        function randomIntInc (low, high) {
+            return Math.floor(Math.random() * (high - low + 1) + low);
+        }
         // Create a message and send it to the IoT Hub every second
         setInterval(function () {
             //heartbeat
-            var data = JSON.stringify({ deviceId: 'mydevice'});
+            var data = JSON.stringify(
+                    { 
+                        Temperature: random(30,35),
+                        Pressure:random(800,820),
+                        Timestamp:new Date(),
+                        Fanspeed:randomIntInc(1200,1250),
+                        WaterLevel:random(80,85)
+                    });
             var message = new Message(data);
             console.log("Sending message: " + message.getData());
             client.sendEvent(message, printResultFor('send'));
 
-        }, 1000);
+        }, 3000);
     }
 };
 client.open(connectCallback);
